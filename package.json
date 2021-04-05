@@ -1,0 +1,56 @@
+{
+    "description": "A node for node-red that jump to node directly.",
+    "name": "node-red-contrib-warp",
+    "version": "0.0.1",
+    "license": "MIT",
+    "keywords": [
+        "node-red",
+        "jump",
+        "warp",
+        "teleport"
+    ],
+    "dependencies": {
+    },
+    "node-red": {
+        "nodes": {
+            "warp": "node/warp.js"
+        }
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/eternity1984/node-red-contrib-warp.git"
+    },
+    "devDependencies": {
+        "chai": "^4.3.0",
+        "gulp": "^4.0.2",
+        "gulp-babel": "^8.0.0",
+        "gulp-clean": "^0.4.0",
+        "gulp-htmlmin": "^5.0.1",
+        "gulp-jsdoc3": "^3.0.0",
+        "gulp-replace": "^1.0.0",
+        "gulp-sequence": "^1.0.0",
+        "gulp-sourcemaps": "^2.6.5",
+        "gulp-uglify": "^3.0.2",
+        "mocha": "^6.2.3",
+        "mocha-junit-reporter": "^2.0.0",
+        "node-red": "^1.2.9",
+        "node-red-node-test-helper": "^0.2.6",
+        "nyc": "^15.1.0",
+        "should": "^13.2.3",
+        "standard": "^14.3.4",
+        "standard-version": "^8.0.0"
+    },
+    "scripts": {
+        "test": "standard --fix && mocha test/**/*_spec.js",
+        "cover": "nyc --reporter=lcov --reporter=text mocha --timeout 5000"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "standard": {
+        "ignore": [
+            "node_modules/",
+            "test/"
+        ]
+    }
+}

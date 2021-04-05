@@ -1,0 +1,176 @@
+<!--
+  Copyright JS Foundation and other contributors, http://js.foundation
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType("warp", {
+        category: 'common',
+        icon: "warp.png",
+        color: '#aaa',
+        inputs: 1,
+        outputs: 0,
+        defaults: {
+            name: {
+                value: ""
+            }, 
+            scope: {
+                value: []
+            }
+        },
+        label: function() {
+            if (this.name) {
+                return this.name;
+            }
+            return this._("warp.warpNodes", {number: this.scope.length});
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        },
+        oneditprepare: function() {
+            const node = this;
+            var scope = node.scope || [];
+
+            node._resize = function() {
+                var rows = $("#dialog-form>div:not(.node-input-target-list-row)");
+                var height = $("#dialog-form").height();
+                for (var i=0;i<rows.length;i++) {
+                    height -= $(rows[i]).outerHeight(true);
+                }
+                $("#dialog-form>div.node-input-target-list-row").css("height", height+"px");
+            };
+
+            var search = $("#node-input-complete-target-filter").searchBox({
+                style: "compact",
+                delay: 300,
+                change: function() {
+                    var val = $(this).val().trim().toLowerCase();
+                    if (val === "") {
+                        dirList.treeList("filter", null);
+                        search.searchBox("count","");
+                    } else {
+                        var count = dirList.treeList("filter", function(item) {
+                            return item.label.toLowerCase().indexOf(val) > -1 || item.node.type.toLowerCase().indexOf(val) > -1
+                        });
+                        search.searchBox("count",count+" / "+items.length);
+                    }
+                }
+            });
+
+            var dirList = $("#node-input-complete-target-container-div").css({width: "100%", height: "100%"})
+                .treeList({multi:true}).on("treelistitemmouseover", function(e, item) {
+                    item.node.highlighted = true;
+                    item.node.dirty = true;
+                    RED.view.redraw();
+                }).on("treelistitemmouseout", function(e, item) {
+                    item.node.highlighted = false;
+                    item.node.dirty = true;
+                    RED.view.redraw();
+                })
+            var candidateNodes = RED.nodes.filterNodes({z:node.z});
+            var allChecked = true;
+            var items = [];
+            var nodeItemMap = {};
+
+            candidateNodes.forEach(function(n) {
+                if (n.id === node.id) {
+                    return;
+                }
+                if (n.inputs == 0) {
+                    return;
+                }
+                var isChecked = scope.indexOf(n.id) !== -1;
+
+                allChecked = allChecked && isChecked;
+
+                var nodeDef = RED.nodes.getType(n.type);
+                var label;
+                var sublabel;
+                if (nodeDef) {
+                    var l = nodeDef.label;
+                    label = (typeof l === "function" ? l.call(n) : l)||"";
+                    sublabel = n.type;
+                    if (sublabel.indexOf("subflow:") === 0) {
+                        var subflowId = sublabel.substring(8);
+                        var subflow = RED.nodes.subflow(subflowId);
+                        sublabel = "subflow : "+subflow.name;
+                    }
+                }
+                if (!nodeDef || !label) {
+                    label = n.type;
+                }
+                nodeItemMap[n.id] = {
+                    node: n,
+                    label: label,
+                    sublabel: sublabel,
+                    selected: isChecked,
+                    checkbox: true
+                };
+                items.push(nodeItemMap[n.id]);
+            });
+            dirList.treeList('data',items);
+
+            $("#node-input-complete-target-select").on("click", function(e) {
+                e.preventDefault();
+                var preselected = dirList.treeList('selected').map(function(n) {return n.node.id});
+                RED.tray.hide();
+                RED.view.selectNodes({
+                    selected: preselected,
+                    onselect: function(selection) {
+                        RED.tray.show();
+                        var newlySelected = {};
+                        selection.forEach(function(n) {
+                            newlySelected[n.id] = true;
+                            if (nodeItemMap[n.id]) {
+                                nodeItemMap[n.id].treeList.select(true);
+                            }
+                        })
+                        preselected.forEach(function(id) {
+                            if (!newlySelected[id]) {
+                                nodeItemMap[id].treeList.select(false);
+                            }
+                        })
+                    },
+                    oncancel: function() {
+                        RED.tray.show();
+                    },
+                    filter: function(n) {
+                        return n.id !== node.id && n.inputs > 0;
+                    }
+                });
+            })
+
+        },
+        oneditsave: function() {
+            this.scope = $("#node-input-complete-target-container-div").treeList('selected').map(function(i) { return i.node.id})
+        },
+        oneditresize: function(size) {
+            this._resize();
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="warp">
+
+    <div class="form-row node-input-target-row">
+        <button id="node-input-complete-target-select" class="red-ui-button" data-i18n="node-red:common.label.selectNodes"></button>
+    </div>
+    <div class="form-row node-input-target-row node-input-target-list-row" style="position: relative; min-height: 100px">
+        <div style="position: absolute; top: -30px; right: 0;"><input type="text" id="node-input-complete-target-filter"></div>
+        <div id="node-input-complete-target-container-div"></div>
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+
+</script>
