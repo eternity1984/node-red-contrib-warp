@@ -24,13 +24,22 @@
             }, 
             scope: {
                 value: []
+            },
+            destination: {
+                value: "selected"
             }
         },
         label: function() {
             if (this.name) {
                 return this.name;
             }
-            return this._("warp.warpNodes", {number: this.scope.length});
+
+            if (this.destination === "varmsg") {
+                return this._("warp.warpNodes", {label: "msg.scope"});
+
+            } else {
+                return this._("warp.warpNodes", {label: this.scope.length});
+            }
         },
         labelStyle: function() {
             return this.name ? "node_label_italic" : "";
@@ -42,13 +51,23 @@
             node._resize = function() {
                 var rows = $("#dialog-form>div:not(.node-input-target-list-row)");
                 var height = $("#dialog-form").height();
-                for (var i=0;i<rows.length;i++) {
+                for (var i = 0; i < rows.length; i++) {
                     height -= $(rows[i]).outerHeight(true);
                 }
-                $("#dialog-form>div.node-input-target-list-row").css("height", height+"px");
+                $("#dialog-form>div.node-input-target-list-row").css("height", height + "px");
             };
 
-            var search = $("#node-input-complete-target-filter").searchBox({
+            $("#node-input-destination").on("change", function(e) {
+                var scope = $(this).val();
+                if (scope === "selected") {
+                    $(".node-input-target-row").show();
+                } else {
+                    $(".node-input-target-row").hide();
+                }
+                node._resize();
+            });
+
+            var search = $("#node-input-target-filter").searchBox({
                 style: "compact",
                 delay: 300,
                 change: function() {
@@ -60,12 +79,12 @@
                         var count = dirList.treeList("filter", function(item) {
                             return item.label.toLowerCase().indexOf(val) > -1 || item.node.type.toLowerCase().indexOf(val) > -1
                         });
-                        search.searchBox("count",count+" / "+items.length);
+                        search.searchBox("count", count + " / " + items.length);
                     }
                 }
             });
 
-            var dirList = $("#node-input-complete-target-container-div").css({width: "100%", height: "100%"})
+            var dirList = $("#node-input-target-container-div").css({width: "100%", height: "100%"})
                 .treeList({multi:true}).on("treelistitemmouseover", function(e, item) {
                     item.node.highlighted = true;
                     item.node.dirty = true;
@@ -75,16 +94,13 @@
                     item.node.dirty = true;
                     RED.view.redraw();
                 })
-            var candidateNodes = RED.nodes.filterNodes({z:node.z});
+            var candidateNodes = RED.nodes.filterNodes({ z: node.z });
             var allChecked = true;
             var items = [];
             var nodeItemMap = {};
 
             candidateNodes.forEach(function(n) {
-                if (n.id === node.id) {
-                    return;
-                }
-                if (n.inputs == 0) {
+                if ((n.id === node.id) || (n.inputs == 0) || (n.type == 'warp')) {
                     return;
                 }
                 var isChecked = scope.indexOf(n.id) !== -1;
@@ -96,12 +112,12 @@
                 var sublabel;
                 if (nodeDef) {
                     var l = nodeDef.label;
-                    label = (typeof l === "function" ? l.call(n) : l)||"";
+                    label = (typeof l === "function" ? l.call(n) : l) || "";
                     sublabel = n.type;
                     if (sublabel.indexOf("subflow:") === 0) {
                         var subflowId = sublabel.substring(8);
                         var subflow = RED.nodes.subflow(subflowId);
-                        sublabel = "subflow : "+subflow.name;
+                        sublabel = "subflow : " + subflow.name;
                     }
                 }
                 if (!nodeDef || !label) {
@@ -118,7 +134,7 @@
             });
             dirList.treeList('data',items);
 
-            $("#node-input-complete-target-select").on("click", function(e) {
+            $("#node-input-target-select").on("click", function(e) {
                 e.preventDefault();
                 var preselected = dirList.treeList('selected').map(function(n) {return n.node.id});
                 RED.tray.hide();
@@ -143,14 +159,24 @@
                         RED.tray.show();
                     },
                     filter: function(n) {
-                        return n.id !== node.id && n.inputs > 0;
+                        return n.id !== node.id && n.inputs > 0 && n.type != 'warp';
                     }
                 });
             })
 
+            // if (this.scope) {
+            //     $("#node-input-destination").val("selected");
+            // } else {
+            //     $("#node-input-destination").val("varmsg");
+            // }
+            // $("#node-input-destination").trigger("change");
         },
         oneditsave: function() {
-            this.scope = $("#node-input-complete-target-container-div").treeList('selected').map(function(i) { return i.node.id})
+            if ($("#node-input-destination").val() !== "varmsg") {
+                this.scope = $("#node-input-target-container-div").treeList('selected').map(function(i) { return i.node.id });
+            } else {
+                this.scope = null;
+            }
         },
         oneditresize: function(size) {
             this._resize();
@@ -160,12 +186,20 @@
 
 <script type="text/x-red" data-template-name="warp">
 
+    <div class="form-row">
+        <label for="node-input-scope"><i class="fa fa-truck"></i> <span data-i18n="warp.label.destination"></span></label>
+        <select id="node-input-destination" style="width:70%">
+            <option value="selected" data-i18n="warp.scope.selected"></option>
+            <option value="varmsg" data-i18n="warp.scope.varmsg"></options>
+        </select>
+    </div>
+
     <div class="form-row node-input-target-row">
-        <button id="node-input-complete-target-select" class="red-ui-button" data-i18n="node-red:common.label.selectNodes"></button>
+        <button id="node-input-target-select" class="red-ui-button" data-i18n="node-red:common.label.selectNodes"></button>
     </div>
     <div class="form-row node-input-target-row node-input-target-list-row" style="position: relative; min-height: 100px">
-        <div style="position: absolute; top: -30px; right: 0;"><input type="text" id="node-input-complete-target-filter"></div>
-        <div id="node-input-complete-target-container-div"></div>
+        <div style="position: absolute; top: -30px; right: 0;"><input type="text" id="node-input-target-filter"></div>
+        <div id="node-input-target-container-div"></div>
     </div>
 
     <div class="form-row">

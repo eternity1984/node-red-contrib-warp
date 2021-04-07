@@ -1,5 +1,5 @@
 {
-    "description": "A node for node-red that jump to node directly.",
+    "description": "A Node-RED node that warp message directly to specific nodes.",
     "name": "node-red-contrib-warp",
     "version": "0.0.1",
     "license": "MIT",

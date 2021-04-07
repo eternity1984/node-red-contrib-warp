@@ -1,5 +1,12 @@
 {
     "warp": {
-        "warpNodes": "warp: __number__"
+        "warpNodes": "ワープ: __label__",
+        "scope": {
+            "selected": "選択したノード",
+            "varmsg": "msg.scope で指定する"
+        }, 
+        "label": {
+            "destination": "転送先"
+        }
     }
 }
