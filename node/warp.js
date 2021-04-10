@@ -1,15 +1,12 @@
 class WarpGate {
-
-  constructor (RED, node, config) {
+  constructor (RED, config) {
     this.RED = RED
     this.config = config
-    
-    node.on('input', this.inputHandler.bind(this, node))
   }
 
-  inputHandler(node, msg, send, done) {
-    const func = this.exec.bind(this, node, msg, done)
-    this.initScope(msg, function(scope, err) {
+  inputHandler (node, msg, send, done) {
+    const func = this._exec.bind(this, node, msg, done)
+    this._initScope(msg, function (scope, err) {
       if (err) {
         if (done) {
           done(err)
@@ -22,7 +19,7 @@ class WarpGate {
     })
   }
 
-  initScope(msg, callback) {
+  _initScope (msg, callback) {
     const RED = this.RED
     const config = this.config
 
@@ -46,7 +43,7 @@ class WarpGate {
     callback(scope, null)
   }
 
-  exec(node, msg, done, scope) {
+  _exec (node, msg, done, scope) {
     const RED = this.RED
 
     var failed = []
@@ -70,10 +67,11 @@ class WarpGate {
 
 module.exports = function (RED) {
   'use strict'
-  RED.nodes.registerType('warp', function(config) {
+  RED.nodes.registerType('warp', function (config) {
     const node = this
     RED.nodes.createNode(node, config)
 
-    new WarpGate(RED, node, config)
+    const warp = new WarpGate(RED, config)
+    node.on('input', warp.inputHandler.bind(warp, node))
   })
 }
