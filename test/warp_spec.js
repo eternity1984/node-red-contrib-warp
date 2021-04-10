@@ -27,39 +27,40 @@ describe('warp Node tests', function() {
             })
         })
 
-        // it('should be catched errors', function(done) {
-        //     const flow = [{
-        //             id: 'n1',
-        //             type: 'friendly-id',
-        //             mode: 'ENCODE',
-        //         },
-        //         {
-        //             id: 'ns',
-        //             type: 'catch',
-        //             scope: ['n1'],
-        //             wires: [
-        //                 ['nh']
-        //             ]
-        //         },
-        //         {
-        //             id: 'nh',
-        //             type: 'helper'
-        //         }
-        //     ]
-        //     helper.load(friendlyIdNode, flow, function() {
-        //         const n1 = helper.getNode('n1')
-        //         const nh = helper.getNode('nh')
-        //         nh.on('input', function(msg) {
-        //             try {
-        //                 msg.error.should.have.property('message', 'Error: Missing input property: msg.payload')
-        //                 done()
-        //             } catch (err) {
-        //                 done(err)
-        //             }
-        //         })
-        //         n1.receive({ topic: '' })
-        //     })
-        // })
+        it('should be catched errors', function(done) {
+            const flow = [
+                {
+                    id: 'n1',
+                    type: 'warp',
+                    destination: 'varmsg',
+                },
+                {
+                    id: 'ns',
+                    type: 'catch',
+                    scope: ['n1'],
+                    wires: [
+                        ['nh']
+                    ]
+                },
+                {
+                    id: 'nh',
+                    type: 'helper'
+                }
+            ]
+            helper.load(warpNode, flow, function() {
+                const n1 = helper.getNode('n1')
+                const nh = helper.getNode('nh')
+                nh.on('input', function(msg) {
+                    try {
+                        msg.error.should.have.property('message', 'TypeError: `msg.scope` must be an array of strings, or a comma-separated string.')
+                        done()
+                    } catch (err) {
+                        done(err)
+                    }
+                })
+                n1.receive({ scope: [23] })
+            })
+        })
     })
 
     describe('warp', function() {
@@ -159,15 +160,12 @@ describe('warp Node tests', function() {
             })
         })
    
-        it('should warp msg (msg: a comma-separated string)', function(done) {
+        it('should warp msg (msg: a comma-separated string) * has one invalid scope', function(done) {
             var flow = [
                 {
                     id: 'n1',
                     type: 'warp',
-                    scope: [
-                        'nh1',
-                        'nh2'
-                    ]
+                    destination: "varmsg"
                 },
                 {
                     id: 'nh1',
@@ -191,7 +189,7 @@ describe('warp Node tests', function() {
                         done(err)
                     }
                 })
-                n1.receive({ payload: 'abc', scope: "nh1, nh2" })
+                n1.receive({ payload: 'abc', scope: "nh1, nh2, nh3" })
             })
         })
 
@@ -201,10 +199,8 @@ describe('warp Node tests', function() {
                 {
                     id: 'n1',
                     type: 'warp',
-                    scope: [
-                        'nh1',
-                        'nh2'
-                    ]
+                    destination: "varmsg"
+                    
                 },
                 {
                     id: 'nh1',

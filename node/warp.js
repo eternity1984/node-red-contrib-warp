@@ -28,14 +28,14 @@ class WarpGate {
         scope = this._getScopeFrom(msg)
       } catch (error) {
         callback(null, error)
-        return        
+        return
       }
     }
     scope = [...new Set(scope)].filter(x => x)
     callback(scope, null)
   }
-  
-  _getScopeFrom(msg) {
+
+  _getScopeFrom (msg) {
     const RED = this.RED
     const msgVal = RED.util.getMessageProperty(msg, 'scope')
 
