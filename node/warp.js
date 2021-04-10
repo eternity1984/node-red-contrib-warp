@@ -25,22 +25,31 @@ class WarpGate {
 
     var scope = config.scope || []
     if (config.destination === 'varmsg') {
-      const msgVal = RED.util.getMessageProperty(msg, 'scope')
-
-      if (typeof msgVal === 'string') {
-        // a comma-separated string
-        const re = /\s*(?:,|$)\s*/
-        scope = msgVal.split(re)
-      } else if (Array.isArray(msgVal) && msgVal.every(x => typeof x === 'string')) {
-        // an array of strings
-        scope = msgVal
-      } else {
-        callback(null, new TypeError('`msg.scope` must be an array of strings, or a comma-separated string.'))
-        return
+      try {
+        scope = this._getScopeFrom(msg)
+      } catch (error) {
+        callback(null, error)
+        return        
       }
     }
     scope = [...new Set(scope)].filter(x => x)
     callback(scope, null)
+  }
+  
+  _getScopeFrom(msg) {
+    const RED = this.RED
+    const msgVal = RED.util.getMessageProperty(msg, 'scope')
+
+    if (typeof msgVal === 'string') {
+      // a comma-separated string
+      const re = /\s*(?:,|$)\s*/
+      return msgVal.split(re)
+    } else if (Array.isArray(msgVal) && msgVal.every(x => typeof x === 'string')) {
+      // an array of strings
+      return msgVal
+    } else {
+      throw new TypeError('`msg.scope` must be an array of strings, or a comma-separated string.')
+    }
   }
 
   _exec (node, msg, done, scope) {

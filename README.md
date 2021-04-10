@@ -10,7 +10,7 @@
 [![Total alerts][img-lgtm-alerts]][url-lgtm]
 [![Language grade: JavaScript][img-lgtm-lang-grade]][url-lgtm]
 [![Maintainability][img-codeclimate-m]][url-codeclimate]
-[![Maintainability][img-codeclimate-t]][url-codeclimate]
+[![test coverage][img-codeclimate-t]][url-codeclimate]
 ...
 
 # node-red-contrib-warp
@@ -50,8 +50,8 @@ This project is released under the [MIT License](LICENSE).
 
 [img-lgtm-alerts]: https://img.shields.io/lgtm/alerts/g/eternity1984/node-red-contrib-warp.svg?logo=lgtm&logoWidth=18
 [img-lgtm-lang-grade]: https://img.shields.io/lgtm/grade/javascript/g/eternity1984/node-red-contrib-warp.svg?logo=lgtm&logoWidth=18
-[img-codeclimate-m]: https://api.codeclimate.com/v1/badges/40c8fc69eb0934cf5e8f/maintainability
-[img-codeclimate-t]: https://api.codeclimate.com/v1/badges/40c8fc69eb0934cf5e8f/test_coverage
+[img-codeclimate-m]: https://api.codeclimate.com/v1/badges/a4557878d2c42453a0ca/maintainability
+[img-codeclimate-t]: https://api.codeclimate.com/v1/badges/a4557878d2c42453a0ca/test_coverage
 [url-codeclimate]: https://codeclimate.com/github/eternity1984/node-red-contrib-warp/
 
 [img-standard]: https://img.shields.io/badge/code_style-standard-brightgreen.svg
