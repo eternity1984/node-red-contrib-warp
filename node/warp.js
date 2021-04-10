@@ -20,7 +20,6 @@ class WarpGate {
   }
 
   _initScope (msg, callback) {
-    const RED = this.RED
     const config = this.config
 
     var scope = config.scope || []
