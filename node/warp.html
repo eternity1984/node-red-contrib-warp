@@ -100,7 +100,7 @@
             var nodeItemMap = {};
 
             candidateNodes.forEach(function(n) {
-                if ((n.id === node.id) || (n.inputs == 0) || (n.type == 'warp')) {
+                if ((n.id === node.id) || (n.inputs == 0) || (n.type == node.type)) {
                     return;
                 }
                 var isChecked = scope.indexOf(n.id) !== -1;
@@ -159,7 +159,7 @@
                         RED.tray.show();
                     },
                     filter: function(n) {
-                        return n.id !== node.id && n.inputs > 0 && n.type != 'warp';
+                        return n.id !== node.id && n.inputs > 0 && n.type != node.type;
                     }
                 });
             })

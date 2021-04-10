@@ -6,7 +6,7 @@
             "varmsg": "override scope with msg.scope"
         }, 
         "label": {
-            "destination": "Destination"
+            "destination": "Warp to"
         }
     }
 }

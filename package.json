@@ -1,19 +1,19 @@
 {
-    "description": "A Node-RED node that warp message directly to specific nodes.",
+    "description": "A node for Node-RED that can warps message directly to the specified nodes.",
     "name": "node-red-contrib-warp",
     "version": "0.0.1",
     "license": "MIT",
     "keywords": [
         "node-red",
+        "gate",
+        "portal",
         "jump",
         "warp",
         "teleport"
     ],
-    "dependencies": {
-    },
     "node-red": {
         "nodes": {
-            "warp": "node/warp.js"
+            "warp-gate": "node/warp.js"
         }
     },
     "repository": {
@@ -21,7 +21,7 @@
         "url": "https://github.com/eternity1984/node-red-contrib-warp.git"
     },
     "devDependencies": {
-        "chai": "^4.3.0",
+        "chai": "^4.3.4",
         "gulp": "^4.0.2",
         "gulp-babel": "^8.0.0",
         "gulp-clean": "^0.4.0",
