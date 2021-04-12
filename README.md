@@ -27,12 +27,20 @@ $ npm install node-red-contrib-warp
 
 ## Usage
 
+![](https://user-images.githubusercontent.com/34591767/114332008-3dce9500-9b80-11eb-8361-07c7076271e0.gif)
 
 
 ## Examples
 
 ### Basic Operation
 This flow demonstrates the basic operation of the `warp` node and the commands that can be used to change its state.
+
+![](https://user-images.githubusercontent.com/34591767/114331738-a2d5bb00-9b7f-11eb-92cf-88ca2776707d.png)
+```json
+[{"id":"4a6dc584.248f5c","type":"inject","z":"f6f2187d.f17ca8","name":"","props":[{"p":"payload"}],"repeat":"","crontab":"","once":false,"onceDelay":"","topic":"","payload":"123","payloadType":"num","x":290,"y":160,"wires":[["4cb0570.dc11ba8"]]},{"id":"4cb0570.dc11ba8","type":"warp","z":"f6f2187d.f17ca8","scope":["55d3323b.15db3c"],"destination":"selected","x":460,"y":160,"wires":[]},{"id":"55d3323b.15db3c","type":"debug","z":"f6f2187d.f17ca8","active":true,"tosidebar":true,"x":470,"y":220,"wires":[]},{"id":"4581fbf2.663664","type":"inject","z":"f6f2187d.f17ca8","name":"","props":[{"p":"payload"}],"repeat":"","crontab":"","once":false,"onceDelay":"","topic":"","payload":"","payloadType":"date","x":300,"y":220,"wires":[["55d3323b.15db3c"]]}]
+```
+
+### Advanced Operation
 
 
 
@@ -42,7 +50,7 @@ This project is released under the [MIT License](LICENSE).
 
 [img-platform]: https://img.shields.io/badge/platform-Node--RED-brown.svg
 [img-install-size]: https://packagephobia.com/badge?p=node-red-contrib-warp
-[img-downloads-current]: https://img.shields.io/npm/dm/node-red-contrib-warp.svg
+[img-downloads-current]: https://img.shields.io/npm/dw/node-red-contrib-warp.svg
 [img-downloads-total]: https://img.shields.io/npm/dt/node-red-contrib-warp.svg
 [img-npm-version]: https://img.shields.io/npm/v/node-red-contrib-warp
 [img-license]: https://img.shields.io/github/license/eternity1984/node-red-contrib-warp
