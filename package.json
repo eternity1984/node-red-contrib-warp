@@ -1,7 +1,7 @@
 {
     "description": "A node for Node-RED that can warps message directly to the specified nodes.",
     "name": "node-red-contrib-warp",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "license": "MIT",
     "keywords": [
         "node-red",
