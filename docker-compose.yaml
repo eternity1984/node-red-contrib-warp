@@ -2,11 +2,11 @@
 version: '3'
 services:
   node-red-docker:
-    image: nodered/node-red:1.2.5
+    image: nodered/node-red:1.2.9
     container_name: nodered
     user: root
     ports:
     - "1880:1880"
     volumes:
-      - '.:/data/node_modules/node-red-contrib-teleport-gate'
+      - '.:/data/node_modules/node-red-contrib-warp'
 volumes: {}
