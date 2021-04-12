@@ -1,0 +1,12 @@
+{
+    "warp": {
+        "warpNodes": "warp: __label__",
+        "scope": {
+            "selected": "selected nodes",
+            "varmsg": "override scope with msg.scope"
+        }, 
+        "label": {
+            "destination": "Warp to"
+        }
+    }
+}

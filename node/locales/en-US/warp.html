@@ -1,0 +1,15 @@
+<script type="text/html" data-help-name="warp">
+    <p>Warps message directly to the specified nodes.</p>
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt class="optional">scope <span class="property-type">string | Array</span></dt>
+        <dd>Sets the scope to be applied to the message. This
+            option only applies if the node is configured to allow the message to
+            override the configured default scope.</dd>
+        <dd>Multiple values can be set as a comma-separated string.</dd>
+        <dd>Only strings can be set as array elements.</dd>
+    </dl>
+    <h3>Details</h3>
+    <p>This node is useful for resuming a flow that has been interrupted.</p>
+    <p><b>Attention: </b>Be careful not to introduce infinite loops.</p>
+</script>

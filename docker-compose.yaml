@@ -1,0 +1,12 @@
+# using docker-compose for local code testing and development
+version: '3'
+services:
+  node-red-docker:
+    image: nodered/node-red:1.2.5
+    container_name: nodered
+    user: root
+    ports:
+    - "1880:1880"
+    volumes:
+      - '.:/data/node_modules/node-red-contrib-teleport-gate'
+volumes: {}
