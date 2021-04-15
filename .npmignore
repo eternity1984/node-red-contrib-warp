@@ -108,6 +108,7 @@ dist
 .git/
 test/
 docker-compose.yaml
+.DS_Store
 
 # CI
 .circleci/
